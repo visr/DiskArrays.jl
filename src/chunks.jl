@@ -7,7 +7,9 @@ function eachchunk end
 
 abstract type ChunkType <: AbstractVector{UnitRange} end
 
-findchunk(a::ChunkType, i::AbstractUnitRange) = findchunk(a, first(i))::Int:findchunk(a, last(i))::Int
+function findchunk(a::ChunkType, i::AbstractUnitRange)
+    return (findchunk(a, first(i))::Int):(findchunk(a, last(i))::Int)
+end
 findchunk(a::ChunkType, ::Colon) = 1:length(a)
 
 """
@@ -152,7 +154,7 @@ function subsetchunks_fallback(r, subs)
     if rev
         reverse!(chunks)
     end
-    chunktype_from_chunksizes(chunks)
+    return chunktype_from_chunksizes(chunks)
 end
 
 """
@@ -170,7 +172,7 @@ function chunktype_from_chunksizes(chunks)
         #Two affected chunks
         chunksize = max(chunks[1], chunks[2])
         return RegularChunks(chunksize, chunksize - chunks[1], sum(chunks))
-    elseif all(==(chunks[2]), view(chunks, (2):(length(chunks)-1))) &&
+    elseif all(==(chunks[2]), view(chunks, (2):(length(chunks) - 1))) &&
         chunks[end] <= chunks[2] &&
         chunks[1] <= chunks[2]
         #All chunks have the same size, only first and last chunk can be shorter

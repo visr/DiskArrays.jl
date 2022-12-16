@@ -25,7 +25,8 @@ function writeblock!() end
 function getindex_disk(a, i...)
     checkscalar(i)
     if any(j -> isa(j, AbstractArray) && !isa(j, AbstractRange), i)
-        batchgetindex(a, i...) else
+        batchgetindex(a, i...)
+    else
         inds, trans = interpret_indices_disk(a, i)
         data = Array{eltype(a)}(undef, map(length, inds)...)
         readblock!(a, data, inds...)
@@ -49,7 +50,6 @@ function setindex_disk!(a::AbstractDiskArray, v::AbstractArray, i...)
         v
     end
 end
-
 
 """
 Function that translates a list of user-supplied indices into plain ranges and
